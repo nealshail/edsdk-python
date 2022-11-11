@@ -971,13 +971,13 @@ static PyObject* PyEds_GetVolumeInfo(PyObject *Py_UNUSED(self), PyObject *pyVolu
     unsigned long retVal(EdsGetVolumeInfo(volume->edsObj, &volumeInfo));
     PyCheck_EDSERROR(retVal);
 
-    PyObject *pyStorageType = GetEnum("constants", "StorageType", volumeInfo.storageType);
+    PyObject *pyStorageType = GetEnum("edsdk.constants", "StorageType", volumeInfo.storageType);
     if (pyStorageType == nullptr) {
         PyErr_Clear();
         std::cout << "Unknown StorageType: " << volumeInfo.storageType << std::endl;
         pyStorageType = PyLong_FromUnsignedLong(volumeInfo.storageType);
     }
-    PyObject *pyAccess = GetEnum("constants", "Access", volumeInfo.access);
+    PyObject *pyAccess = GetEnum("edsdk.constants", "Access", volumeInfo.access);
     if (pyAccess == nullptr) {
         PyErr_Clear();
         std::cout << "Unknown StorageType: " << volumeInfo.access << std::endl;
@@ -1050,7 +1050,7 @@ static PyObject* PyEds_GetDirectoryItemInfo(PyObject *Py_UNUSED(self), PyObject 
     PyObject *pyGroupID = PyLong_FromUnsignedLong(dirItemInfo.groupID);
     PyObject *pyOption = PyLong_FromUnsignedLong(dirItemInfo.option);
     PyObject *pySzFileName = PyUnicode_DecodeFSDefault(dirItemInfo.szFileName);
-    PyObject *pyFormat = GetEnum("constants", "ObjectFormat", dirItemInfo.format);
+    PyObject *pyFormat = GetEnum("edsdk.constants", "ObjectFormat", dirItemInfo.format);
     if (pyFormat == nullptr) {
         PyErr_Clear();
         std::cout << "Unknown ObjectFormat: " << dirItemInfo.format << std::endl;
