@@ -1998,7 +1998,9 @@ static PyObject* PyEds_SetPropertyEventHandler(PyObject *Py_UNUSED(self), PyObje
 }
 
 
-static PyObject *pySetObjectCallback[2] = {nullptr, nullptr};
+static PyObject *pySetObjectCallback1[2] = {nullptr, nullptr};
+static PyObject *pySetObjectCallback2[2] = {nullptr, nullptr};
+
 
 PyDoc_STRVAR(PyEds_SetObjectEventHandler__doc__,
 "Registers a callback function for receiving status\n"
@@ -2039,11 +2041,18 @@ static PyObject* PyEds_SetObjectEventHandler(PyObject *Py_UNUSED(self), PyObject
         return nullptr;
     }
 
-    Py_XDECREF(pySetObjectCallback[0]);
-    Py_XDECREF(pySetObjectCallback[1]);
-
-    pySetObjectCallback[0] = pyCallable;
-    pySetObjectCallback[1] = pyContext;
+    int call = 1;
+    if (pySetObjectCallback1[0] == nullptr){
+        pySetObjectCallback1[0] = pyCallable;
+        pySetObjectCallback1[1] = pyContext;
+    }
+    else{
+        call = 2;
+        Py_XDECREF(pySetObjectCallback2[0]);
+        Py_XDECREF(pySetObjectCallback2[1]);
+        pySetObjectCallback2[0] = pyCallable;
+        pySetObjectCallback2[1] = pyContext;
+    }
 
     Py_INCREF(pyCallable);
     Py_XINCREF(pyContext);
@@ -2088,7 +2097,7 @@ static PyObject* PyEds_SetObjectEventHandler(PyObject *Py_UNUSED(self), PyObject
     };
 
     unsigned long retVal(EdsSetObjectEventHandler(
-        edsObj->edsObj, event, callbackWrapper, pySetObjectCallback));
+        edsObj->edsObj, event, callbackWrapper, (call==1)?pySetObjectCallback1:pySetObjectCallback2));
 
     if (retVal != EDS_ERR_OK) {
         Py_DECREF(pyCallable);
